@@ -109,12 +109,13 @@ module Bigint = struct
 			if (compare listPowerOf2 listMultiplier 0) = 1		
 				then listMultiplier, [0] 
 			else let listRemainder, listProduct = 
-				mul' listMultiplier (add' listPowerOf2 listPowerOf2 0) (add' listMultiplicand listMultiplicand 0)
+				mul' listMultiplier (add' listMultiplicand listMultiplicand 0) (add' listPowerOf2 listPowerOf2 0)
 				in if (compare listRemainder listPowerOf2 0) = -1
 					then listRemainder, listProduct
 					else 
 						(trim'(sub' listRemainder listPowerOf2 0), trim'(add' listProduct listMultiplicand 0))
 
+	
 	let rec divrem' listDividend listPowerOf2 listDivisor =
 	if (compare listDivisor listDividend 0) = 1
 		then [0], listDividend
@@ -125,10 +126,10 @@ module Bigint = struct
 				else 
 				(trim'(add' listQuotient listPowerOf2 0), trim'(sub' listRemainder listDivisor 0))
 				
-	let rec power' base expt result = match (base, expt, result) with
-		| car1::cdr1, [0], car2::cdr2		-> result
-		| car1::cdr1, expt, car2::cdr2		-> power' base (sub' expt [1]) (mul' result base 1)
-	
+	(*POWER NEEDS TO BE COMPLETED *)
+	let rec power' base expt result = match expt with
+		| [0]							-> result
+		| expt	-> power' base (sub' expt [1] 0) (add' result base 0)
 	(*
 	let rec power' (base, expt, result) = match expt with
     | 0                   -> result
@@ -183,8 +184,23 @@ module Bigint = struct
 				else Bigint (Pos, add' list2 list1 0)
 			)
         else zero
-		
+
     let mul = add
+	
+	(*
+	(Bigint (sign1, list1)) (Bigint (sign2, list2)) = 
+		let _, product = mul' list1 list2 [1]
+			in Bigint(Pos,product)
+		
+		
+	(Bigint (sign1, list1)) (Bigint (sign2, list2)) = 
+		if (sign1 = Neg || sign2 == Neg) 
+			then 
+				Bigint (Neg, mul' list1 list2 [0])
+				
+		else if (sign1 = Pos && sign2 = Pos)
+			then Bigint (Pos, mul' list1 list2 [0])
+		*)
 
     let div = add
 
