@@ -116,11 +116,11 @@ module Bigint = struct
 						(trim'(sub' listRemainder listPowerOf2 0), trim'(add' listProduct listMultiplicand 0))
 
 	
-	let rec divrem' listDividend listPowerOf2 listDivisor =
+	let rec divrem' listDividend listDivisor listPowerOf2=
 	if (compare listDivisor listDividend 0) = 1
 		then [0], listDividend
 		else let listQuotient, listRemainder = 
-				divrem' listDividend (add' listPowerOf2 listPowerOf2 0) (add' listDivisor listDivisor 0)
+				divrem' listDividend (add' listDivisor listDivisor 0) (add' listPowerOf2 listPowerOf2 0) 
 			in if (compare listRemainder listDivisor 0) = -1
 				then listQuotient, listRemainder
 				else 
@@ -185,22 +185,19 @@ module Bigint = struct
 			)
         else zero
 
-    let mul = add
-	
-	(*
-	(Bigint (sign1, list1)) (Bigint (sign2, list2)) = 
-		let _, product = mul' list1 list2 [1]
-			in Bigint(Pos,product)
-		
-		
-	(Bigint (sign1, list1)) (Bigint (sign2, list2)) = 
-		if (sign1 = Neg || sign2 == Neg) 
+	(*_ is a wildcard. It means, I don't care what
+		mul' gives me as the first parameter. 
+		just give me the second 
+	*)
+    let mul (Bigint (sign1, list1)) (Bigint (sign2, list2)) = 
+		if (sign1 = Neg && sign2 = Pos || sign1 = Pos && sign2 = Neg)
 			then 
-				Bigint (Neg, mul' list1 list2 [0])
-				
-		else if (sign1 = Pos && sign2 = Pos)
-			then Bigint (Pos, mul' list1 list2 [0])
-		*)
+				let _, product = mul' list1 list2 [1]
+				in Bigint(Neg, product)
+		else 
+			let _, product = mul' list1 list2 [1]
+				in Bigint(Pos, product)
+
 
     let div = add
 
